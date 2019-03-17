@@ -36,9 +36,15 @@
                       </select>
                   </f:entry>
 
-                    <f:entry title="OpsGenie API Url" field="apiUrl">
-                          <f:textbox name="apiUrl" value="${instance.getApiUrl()}" />
-                   </f:entry>
+                  <f:entry title="OpsGenie API Url" field="apiUrl">
+                    <f:textbox name="apiUrl" value="${instance.getApiUrl()}" />
+                  </f:entry>
+                  <f:entry title="Proxy Host (can be empty)" field="proxyHost">
+                    <f:textbox field="proxyHost" value="${instance.getProxyHost()}" />
+                  </f:entry>
+                  <f:entry title="Proxy Port (can be empty)" field="proxyPort">
+                     <f:textbox field="proxyPort" value="${instance.getProxyPort}" />
+                  </f:entry>
 
              </f:advanced>
 </j:jelly>

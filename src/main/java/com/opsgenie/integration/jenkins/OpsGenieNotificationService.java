@@ -7,8 +7,10 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -89,6 +91,8 @@ public class OpsGenieNotificationService {
         try {
             String apiUrl = this.request.getApiUrl();
             String apiKey = this.request.getApiKey();
+            String proxyHost = this.request.getProxyHost();
+            int proxyPort = this.request.getProxyPort();
 
 
             URI inputURI = new URI(apiUrl);
@@ -107,9 +111,13 @@ public class OpsGenieNotificationService {
                     .build();
 
             HttpClient client = HttpClientBuilder.create().build();
-
             HttpPost post = new HttpPost(uri);
             StringEntity params = new StringEntity(data);
+
+            if ((StringUtils.isNotEmpty(proxyHost)) && (proxyPort > 0)) {
+                setProxyForHTTPPost(post, proxyHost, proxyPort);
+            }
+
             post.addHeader("content-type", "application/x-www-form-urlencoded");
             post.setEntity(params);
             consoleOutputLogger.println("Sending job data to OpsGenie...");
@@ -123,13 +131,21 @@ public class OpsGenieNotificationService {
         return "";
     }
 
+    private void setProxyForHTTPPost(HttpPost post, String hostname, int port) {
+        HttpHost proxy = new HttpHost(hostname, port);
+        RequestConfig config = RequestConfig.custom()
+                .setProxy(proxy)
+                .build();
+        post.setConfig(config);
+    }
+
     protected boolean sendPreBuildPayload() {
 
         populateRequestPayloadWithMandatoryFields();
 
         requestPayload.put("isPreBuild", "true");
 
-        if(alertProperties.getBuildStartPriority() != null) {
+        if (alertProperties.getBuildStartPriority() != null) {
             requestPayload.put("priority", alertProperties.getBuildStartPriority().getValue());
         }
 
@@ -219,11 +235,11 @@ public class OpsGenieNotificationService {
             String previousTime = previousBuild.getTimestamp().getTime().toString();
             requestPayload.put("previousTime", previousTime);
             Result previousResult = previousBuild.getResult();
-            if(previousResult != null){
+            if (previousResult != null) {
                 requestPayload.put("previousStatus", previousResult.toString());
             }
             AbstractProject previousProject = previousBuild.getProject();
-            if(previousProject != null){
+            if (previousProject != null) {
                 String previousProjectName = previousProject.getName();
                 requestPayload.put("previousProjectName", previousProjectName);
             }
@@ -233,7 +249,7 @@ public class OpsGenieNotificationService {
         requestPayload.put("duration", build.getDurationString());
         requestPayload.put("params", formatBuildVariables());
 
-        if(alertProperties.getPriority() != null) {
+        if (alertProperties.getPriority() != null) {
             requestPayload.put("priority", alertProperties.getPriority().getValue());
         }
 

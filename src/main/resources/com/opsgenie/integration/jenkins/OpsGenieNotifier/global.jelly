@@ -19,6 +19,12 @@
     <f:entry title="API Key" field="apiKey">
         <f:textbox field="apiKey" value="${descriptor.getApiKey()}" />
     </f:entry>
+    <f:entry title="Proxy Host (can be empty)" field="proxyHost">
+         <f:textbox field="proxyHost" value="${descriptor.getProxyHost()}" />
+    </f:entry>
+    <f:entry title="Proxy Port (can be empty)" field="proxyPort">
+          <f:textbox field="proxyPort" value="${descriptor.getProxyPort}" />
+    </f:entry>
     <f:entry title="Teams" field="teams">
         <f:textbox field="teams" value="${descriptor.getTeams()}" />
     </f:entry>

@@ -13,6 +13,8 @@ import hudson.model.BuildListener;
 public class OpsGenieNotificationRequest {
     private String apiKey;
     private String apiUrl;
+    private String proxyHost;
+    private int proxyPort;
     private AlertProperties alertProperties;
     private AbstractBuild build;
     private BuildListener listener;
@@ -61,4 +63,19 @@ public class OpsGenieNotificationRequest {
         this.listener = listener;
         return this;
     }
+
+    public String getProxyHost() { return proxyHost; }
+
+    public OpsGenieNotificationRequest setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+        return this;
+    }
+
+    public int getProxyPort() { return proxyPort; }
+
+    public OpsGenieNotificationRequest setProxyPort(int proxyPort) {
+        this.proxyPort = proxyPort;
+        return this;
+    }
+
 }
